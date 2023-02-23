@@ -179,7 +179,9 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  /* A == b == !(A ^ B) */
+  int target = (0xAA << 24) | (0xAA << 16) | (0xAA << 8) | 0xAA;
+  return !((x | target) ^ x);
 }
 /* 
  * negate - return -x 
@@ -189,7 +191,7 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return (~x) + 1;
 }
 //3
 /* 
@@ -202,7 +204,7 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  return !((x & ~0x3F) | ((x | 0x30) ^ x) | (!((x | 0x0A) ^ x) | !((x | 0x0C) ^ x)));
 }
 /* 
  * conditional - same as x ? y : z 
@@ -212,7 +214,8 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int maskTrue = (!x) + ((~1) + 1);
+  return (maskTrue & y) | (~maskTrue & z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -222,7 +225,13 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  int delta_yx = ~x + y + 1; // this should not be less than 0
+  int res = !!((delta_yx | (1 << 31)) ^ delta_yx);
+  int x_neg = !((x | (1 << 31)) ^ x);
+  int y_neg = !((y | (1 << 31)) ^ y);
+  int maskTrue_x_neg_and_y_pos = !(x_neg & !y_neg) + ((~1) + 1);
+  int maskTrue_x_pos_and_y_neg = !(y_neg & !x_neg) + ((~1) + 1);
+  return (maskTrue_x_pos_and_y_neg & 0) | (~maskTrue_x_pos_and_y_neg & ((maskTrue_x_neg_and_y_pos & 1) | (~maskTrue_x_neg_and_y_pos & res)));
 }
 //4
 /* 
@@ -234,7 +243,12 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  int r1 = x | (x >> 16);
+  int r2 = r1 | (r1 >> 8);
+  int r3 = r2 | (r2 >> 4);
+  int r4 = r3 | (r3 >> 2);
+  int r5 = r4 | (r4 >> 1);
+  return (r5 & 1) ^ 1;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement

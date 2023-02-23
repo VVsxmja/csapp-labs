@@ -1,0 +1,25 @@
+name: Auto Grade 📝
+on: [push]
+jobs: 
+  auto-grade:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install gcc-multilib
+        run: sudo apt install gcc-multilib
+      - name: Build and test all lab
+        run: make
+      - name: Set up NodeJS
+        uses: actions/setup-node@v3
+      - name: Install Node dependencies
+        run: npm install
+        working-directory: ./readme-generator
+      - name: Parse result and modify readme.md
+        run: npm start
+        working-directory: ./readme-generator
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
