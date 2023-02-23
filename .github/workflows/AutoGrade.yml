@@ -1,7 +1,7 @@
 name: Auto Grade 📝
 on: [push]
 jobs: 
-  auto-grade:
+  AutoGrade:
     runs-on: ubuntu-latest
     permissions:
       contents: write
