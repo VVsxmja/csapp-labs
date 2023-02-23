@@ -1,5 +1,7 @@
 # CSAPP labs
 
+<!-- score begin -->
+
 - [ ] Data Lab 
 - [ ] Bomb Lab 
 - [ ] Attack Lab 
@@ -11,3 +13,5 @@
 - [ ] Shell Lab 
 - [ ] Malloc Lab 
 - [ ] Proxy Lab 
+
+<!-- score end -->
