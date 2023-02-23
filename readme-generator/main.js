@@ -21,9 +21,7 @@ const resultObjects = [
         resultFileName: 'data-lab.txt',
         parse(content) {
             const result = /Total points: (?<score>\d+)\/(?<total>\d+)/.exec(content)
-            const score = parseInt(result.groups.score)
-            const total = parseInt(result.groups.total)
-            return new Score(score, total)
+            return new Score(parseInt(result.groups.score), parseInt(result.groups.total))
         }
     },
     { name: 'Bomb Lab' },
@@ -51,28 +49,32 @@ for (const target of resultObjects) {
         console.log(`Auto check of ${target.name} not implemented yet`)
         continue
     }
+    if (!target.resultFileName) {
+        console.warn(`Result file name of ${target.name} not specified`)
+    }
     try {
         const content = await fs.readFile(path.join(resultPath, target.resultFileName), {
             encoding: 'utf-8'
         })
         target.score = target.parse(content)
     } catch (e) {
+        if (e?.code === 'ENOENT') {
+            console.warn(`Result of ${target.name} not exist`)
+        }
         console.error(`Failed parsing result of ${target.name}: \n`, e)
     }
 }
 
 let logParsed = 'Parsed result:\n'
-let finalMarkdown = ''
+let finalMarkdown = '|   |Lab|Score|\n|---|---|---|\n'
 
 for (const target of resultObjects) {
     if (!!target.score) {
         logParsed += `\t${target.name}:\t ${target.score}\n`
-        finalMarkdown += `- [${target.score.done ? 'x' : ' '}] ${target.name}\n`
-            + `  - \`${target.score.score}\` out of \`${target.score.total}\`\n`
+        finalMarkdown += `| ${target.score.done ? '💯' : '📝'} | ${target.name} | **\`${target.score.score}\`** / **\`${target.score.total}\`** | \n`
     } else {
         logParsed += `\t${target.name}:\t Not parsed\n`
-        finalMarkdown += `- [ ] ${target.name}\n`
-            + `  - \`Not done or AutoGrade not implemented\`\n`
+        finalMarkdown += `| ⏳ | ${target.name} | *\`Not implemented\`* | \n`
     }
 }
 
