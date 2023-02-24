@@ -8,7 +8,7 @@ runs all tests and parses test output automatically.
 <!-- score begin -->
 |   |Lab|Score|
 |---|---|---|
-| 📝 | Data Lab | **`20 / 36, ⚠️ 1 warning(s)`** | 
+| ⏳ | Data Lab | *`Not implemented`* | 
 | ⏳ | Bomb Lab | *`Not implemented`* | 
 | ⏳ | Attack Lab | *`Not implemented`* | 
 | ⏳ | Buffer Lab (IA32) | *`Not implemented`* | 
