@@ -82,7 +82,7 @@ for (const target of resultObjects) {
     console.log(target)
     if (!!target.score) {
         logParsed += `\t${target.name}:\t ${target.score}\n`
-        finalMarkdown += `| ${target.score.done ? '💯' : '📝'} | ${target.name} | **\`${target.score}\`** | \n`
+        finalMarkdown += `| ${target.score.done ? '✅' : '🤔'} | ${target.name} | **\`${target.score}\`** | \n`
     } else {
         logParsed += `\t${target.name}:\t Not parsed\n`
         finalMarkdown += `| ⏳ | ${target.name} | *\`Not implemented\`* | \n`
