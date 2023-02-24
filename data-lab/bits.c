@@ -226,12 +226,12 @@ int conditional(int x, int y, int z) {
  */
 int isLessOrEqual(int x, int y) {
   int delta_yx = ~x + y + 1; // this should not be less than 0
-  int res = !!((delta_yx | (1 << 31)) ^ delta_yx);
-  int x_neg = !((x | (1 << 31)) ^ x);
-  int y_neg = !((y | (1 << 31)) ^ y);
-  int maskTrue_x_neg_and_y_pos = !(x_neg & !y_neg) + ((~1) + 1);
-  int maskTrue_x_pos_and_y_neg = !(y_neg & !x_neg) + ((~1) + 1);
-  return (maskTrue_x_pos_and_y_neg & 0) | (~maskTrue_x_pos_and_y_neg & ((maskTrue_x_neg_and_y_pos & 1) | (~maskTrue_x_neg_and_y_pos & res)));
+  int res = !((delta_yx >> 31) & 1);
+  int x_neg = (x >> 31) & 1;
+  int y_neg = (y >> 31) & 1;
+  int maskTrue_x_neg_and_y_pos = (~x_neg | y_neg) + ~0;
+  int maskTrue_x_pos_and_y_neg = (~y_neg | x_neg) + ~0;
+  return (~maskTrue_x_pos_and_y_neg & ((maskTrue_x_neg_and_y_pos & 1) | (~maskTrue_x_neg_and_y_pos & res)));
 }
 //4
 /* 
@@ -263,7 +263,23 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int old_x = x;
+  int r = 0;
+  int mask_zero_or_minus_one;
+  x = ((!!(old_x & (1 << 31)) + ~0) & x) | ((!(old_x & (1 << 31)) + ~0) & ~x);
+  r = r + ((!(x >> 16) + ~0) & 16);
+  x = x >> ((!(x >> 16) + ~0) & 16);
+  r = r + ((!(x >> 8) + ~0) & 8);
+  x = x >> ((!(x >> 8) + ~0) & 8);
+  r = r + ((!(x >> 4) + ~0) & 4);
+  x = x >> ((!(x >> 4) + ~0) & 4);
+  r = r + ((!(x >> 2) + ~0) & 2);
+  x = x >> ((!(x >> 2) + ~0) & 2);
+  r = r + ((!(x >> 1) + ~0) & 1);
+  x = x >> ((!(x >> 1) + ~0) & 1);
+  r = r + 2;
+  mask_zero_or_minus_one = !(!(old_x) | !(~old_x)) + ~0;
+  return (mask_zero_or_minus_one & 1) | (~mask_zero_or_minus_one & r);
 }
 //float
 /* 
