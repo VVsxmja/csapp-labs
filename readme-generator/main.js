@@ -14,13 +14,15 @@ class Score {
         this.other.toString = function () {
             let r = ''
             if (this.warning > 0) {
-                r += `⚠️ ${this.warning} warning(s)`
+                r += `, ⚠️ ${this.warning} warning(s)`
+            } else {
+                r += `, ✅ No warning`
             }
             return r
         }
     }
     toString() {
-        return `${this.score} / ${this.total}, ${this.other}`
+        return `${this.score} / ${this.total}${this.other}`
     }
     get done() {
         return this.score === this.total
@@ -39,7 +41,7 @@ const resultObjects = [
                 encoding: 'utf-8'
             })
             this.score = new Score(parseInt(result.groups.score), parseInt(result.groups.total), {
-                warning: checkContent.match(/dlc:bits.c:\d+:.*: Warning:/g).length
+                warning: checkContent.match(/dlc:bits.c:\d+:.*: Warning:/g)?.length
             })
         }
     },
