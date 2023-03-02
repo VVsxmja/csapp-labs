@@ -368,33 +368,16 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-  unsigned exp = 127;
-  unsigned f = 0;
-  // printf("x = %d\n", x);
   if (x >= 128) {
     return 0xFF << 23;
   }
-  if (x < -200) {
-    return 0;
-  }
-  while (x > 0) {
-    --x;
-    ++exp;
-    if (exp == 0xFF) {
-      return exp << 23;
+  if (x <= -127) {
+    // denormalized or zero
+    if (x <= -127 + 1 - 23) {
+      return 0;
+    } else {
+      return (1 << 23) >> (x + 127 + 1);
     }
   }
-  while (x < 0 && exp > 0) {
-    ++x;
-    --exp;
-    if (exp == 0) {
-      f = 1 << 22;
-    }
-  }
-  while (x < 0 && exp == 0) {
-    ++x;
-    f >>= 1;
-  }
-  return (exp << 23) | f;
-  //
+  return (127 + x) << 23;
 }
