@@ -368,15 +368,17 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-  if (x >= 128) {
+  unsigned ux = x;
+  int f = 149 - x;
+  if ((x >> 7) && !(x >> 31)) {
     return 0xFF << 23;
   }
-  if (x <= -127) {
+  if ((ux >> 31) && ((-x) >> 7)) {
     // denormalized or zero
-    if (x <= -127 + 1 - 23) {
+    if (f <= 0) {
       return 0;
     } else {
-      return (1 << 23) >> (x + 127 + 1);
+      return 1 << f;
     }
   }
   return (127 + x) << 23;
